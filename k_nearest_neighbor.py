@@ -1,3 +1,5 @@
+k_nearest_neighbor.py
+
 from builtins import range
 from builtins import object
 import numpy as np
@@ -78,7 +80,7 @@ class KNearestNeighbor(object):
                 sub = (X[i,:] - self.X_train[j,:]) ** 2
                 dists[i,j] = np.sum(sub)
                 pass
-        return dists
+        return np.sqrt(dists)
 
     def compute_distances_one_loop(self, X):
         """
@@ -103,7 +105,7 @@ class KNearestNeighbor(object):
             dists[i,:] = np.sum((self.X_train - X[i,:]) ** 2, axis = 1)
             
             pass
-        return dists
+        return np.sqrt(dists)
 
     def compute_distances_no_loops(self, X):
         """
@@ -114,7 +116,7 @@ class KNearestNeighbor(object):
         """
         num_test = X.shape[0]
         num_train = self.X_train.shape[0]
-        dists = np.zeros((num_test, num_train))
+        #dists = np.zeros((num_test, num_train))
         #########################################################################
         # TODO:                                                                 #
         # Compute the l2 distance between all test points and all training      #
@@ -128,7 +130,17 @@ class KNearestNeighbor(object):
         # HINT: Try to formulate the l2 distance using matrix multiplication    #
         #       and two broadcast sums.                                         #
         #########################################################################
-        np.ones((num_train,,num_test))
+        xy = -2*np.dot(X,self.X_train.T)
+        y2 = np.sum(X**2, axis=1, keepdims=True) # Automatically has shape (num_test, 1)
+        x2 = np.sum(self.X_train**2,axis=1)
+        dists = y2 +x2 + xy
+        dists = np.maximum(0, dists)
+        dists = np.sqrt(dists)
+        
+       
+
+        
+        
         return dists
 
     def predict_labels(self, dists, k=1):
